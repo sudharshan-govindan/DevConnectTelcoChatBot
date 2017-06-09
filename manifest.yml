@@ -2,10 +2,7 @@
 declared-services:
   conversation-service:
     label: conversation
-    plan: free
-  tone-analyzer:
-    label: tone_analyzer
-    plan: free
+    plan: Lite
   cloudant-db:
     label: cloudantNoSQLDB
     plan: Lite
@@ -19,5 +16,4 @@ applications:
   disk_quota: 1024M
   services:
     - conversation-service
-    - tone-analyzer
     - cloudant-db
