@@ -2,11 +2,10 @@
 declared-services:
   conversation-service:
     label: conversation
-    plan: Free
+    plan: Lite
   cloudant-db:
     label: cloudantNoSQLDB
     plan: Lite
-
 applications:
 - path: .
   memory: 256M
@@ -15,5 +14,5 @@ applications:
   host: DevConnectTelcoChatBot
   disk_quota: 1024M
   services:
-    - conversation-service
-    - cloudant-db
+  - conversation-service
+  - cloudant-db
