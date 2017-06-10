@@ -8,6 +8,7 @@ declared-services:
     plan: Lite
   tone-analyzer:
     label: tone_analyzer
+    plan: Free
 applications:
 - path: .
   memory: 256M
