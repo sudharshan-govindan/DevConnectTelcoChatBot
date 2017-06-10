@@ -6,6 +6,9 @@ declared-services:
   cloudant-db:
     label: cloudantNoSQLDB
     plan: Lite
+  tone-analyzer:
+    label: tone_analyzer
+    plan: free
 applications:
 - path: .
   memory: 256M
@@ -16,3 +19,4 @@ applications:
   services:
   - conversation-service
   - cloudant-db
+  - tone-analyzer
