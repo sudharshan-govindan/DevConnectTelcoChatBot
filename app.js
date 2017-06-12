@@ -1,12 +1,12 @@
 /**
  * Copyright 2015 IBM Corp. All Rights Reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the 'License'); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an 'AS IS' BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -30,11 +30,11 @@ var watson = require("watson-developer-cloud"); // watson sdk
 var cfenv = require("cfenv");
 var cloudant = require("cloudant");
 var vcapServices = require("vcap_services");
-var url = require("url"), bodyParser = require("body-parser"), 
-	http = require("http"), 
+var url = require("url"), bodyParser = require("body-parser"),
+	http = require("http"),
 	https = require("https"),
 	numeral = require("numeral");
-	
+
 var telcoServices = require("./telco_services");
 
 
@@ -43,7 +43,8 @@ var CONVERSATION_USERNAME = "",
 	TONE_ANALYZER_USERNAME = "",
 	TONE_ANALYZER_PASSWORD = "";
 
-var WORKSPACE_ID = "<workspace-id>";
+var WORKSPACE_ID = vcapServices.WORKSPACE_ID || "<workspace-id>"
+	|| vcapServices.getCredentials('WORKSPACE_ID');
 
 var app = express();
 
@@ -78,7 +79,7 @@ var tone_analyzer = watson.tone_analyzer({
 	password : tone_analyzer_credentials.password || TONE_ANALYZER_PASSWORD,
 	url : "https://gateway.watsonplatform.net/tone-analyzer/api",
 	version : "v3",
-	version_date : "2016-05-19"	
+	version_date : "2016-05-19"
 });
 
 
@@ -94,17 +95,17 @@ app.post("/api/message", function(req, res) {
 			}
 		} );
 	}
-	
+
 	var phone=req.body.context.phonenumber;
-	
+
 	telcoServices.getPerson(phone, function(err, person){
-		
+
 		if(err){
 			console.log("Error occurred while getting person data ::", err);
 			return res.status(err.code || 500).json(err);
 		}
-		
-		
+
+
 
 		var payload = {
 			workspace_id : workspace,
@@ -134,7 +135,7 @@ app.post("/api/message", function(req, res) {
 				"roaming":person.roaming,
 				"monthly_sms":person.monthly_sms,
 				"promo_data_pack":person.promo_data_pack,
-				"data_used_mb":person.data_used_mb,  
+				"data_used_mb":person.data_used_mb,
 				"sms_used":person.sms_used,
 				"bill_cycle":person.bill_cycle,
 				"billed_amt":person.billed_amt,
@@ -167,12 +168,12 @@ app.post("/api/message", function(req, res) {
 				"cust_segment":person.cust_segment,
 				"open_req_status":person.open_req_status,
 				"red_family":person.red_family,
-				"stmtdate":person.stmtdate				
+				"stmtdate":person.stmtdate
 			},
 			input : {}
 		};
-		
-		
+
+
 		if (req.body) {
 			if (req.body.input) {
 				payload.input = req.body.input;
@@ -205,12 +206,12 @@ app.post("/api/message", function(req, res) {
 			payload.context.roaming  =person.roaming;
 			payload.context.monthly_sms  =person.monthly_sms;
 			payload.context.promo_data_pack =person.promo_data_pack;
-			payload.context.data_used_mb  =person.data_used_mb;  
-			payload.context.sms_used =person.sms_used;  
+			payload.context.data_used_mb  =person.data_used_mb;
+			payload.context.sms_used =person.sms_used;
 			payload.context.bill_cycle =person.bill_cycle;
-			payload.context.billed_amt =person.billed_amt;  
+			payload.context.billed_amt =person.billed_amt;
 			payload.context.last_payment_mode=person.last_payment_mode;
-			payload.context.balance=person.balance;  
+			payload.context.balance=person.balance;
 			payload.context.alt_number=person.alt_number;
 			payload.context.credit_limit=person.credit_limit;
 			payload.context.pin=person.pin;
@@ -238,21 +239,21 @@ app.post("/api/message", function(req, res) {
 			payload.context.cust_segment=person.cust_segment;
 			payload.context.open_req_status=person.open_req_status;
 			payload.context.red_family=person.red_family;
-			payload.context.stmtdate=person.stmtdate;			  
+			payload.context.stmtdate=person.stmtdate;
 		}
 
 		}
-			
+
 		callconversation(payload);
-		
-	});	
+
+	});
 
 	// Send the input to the tone analyzer and conversation service
-	function callconversation(payload) {	
+	function callconversation(payload) {
 
 
 		var query_input = JSON.stringify(payload.input);
-		
+
 		var context_input = JSON.stringify(payload.context);
 
 		tone_analyzer.tone({
@@ -265,7 +266,7 @@ app.post("/api/message", function(req, res) {
 				//return res.status(err.code || 500).json(err);
 			} else {
 				var emotionTones = tone.document_tone.tone_categories[0].tones;
-				
+
 				var len = emotionTones.length;
 				for (var i = 0; i < len; i++) {
 					if (emotionTones[i].tone_id === "anger") {
@@ -275,10 +276,10 @@ app.post("/api/message", function(req, res) {
 						break;
 					}
 				}
-				
+
 			}
-			
-			payload.context["tone_anger_score"] = tone_anger_score;		
+
+			payload.context["tone_anger_score"] = tone_anger_score;
 			conversation.message(payload, function(err, data) {
 				if (err) {
 					console.log("Error occurred while invoking Conversation. ::", err);
@@ -288,13 +289,13 @@ app.post("/api/message", function(req, res) {
 					consoleStr.input = data.input;
 					consoleStr.intent = data.intents[0];
 					consoleStr.output = data.output.text[0];
-					
+
 					//console.log("Intent in this dialog "+JSON.stringify(data.intents[0]));
 					if(data.intents[0] && data.intents[0].intent && data.intents[0].intent=='exiting'){
 						console.log("Exit intent");
 						exitIntent = true;
 					}
-	
+
 					//phonenumber = data.output.context.phonenumber;
 
 					conversationTranscript.push(consoleStr);
@@ -322,7 +323,7 @@ app.post("/api/logSurvey", function(req,res){
 			method: "POST",
 			headers: headers
 		};
-	
+
 	console.log('Body length = ' + dataString.length + " - Body: " + dataString);
 	callSvc(res,headers,dataString,options);
 });
@@ -347,7 +348,7 @@ app.post("/api/log", function(req,res){
 			method: "POST",
 			headers: headers
 		};
-	
+
 	callSvc(res,headers,dataString,options);
 });
 
@@ -365,7 +366,7 @@ function callSvc(res,headers, dataString, options){
 		});
 
 		resPost.on('end', function() {
-		  
+
 		  if (resPost.statusCode === 200) {
 		  	var responseObject = {};
 		  	if (responseString != ""){
@@ -376,7 +377,7 @@ function callSvc(res,headers, dataString, options){
 		  else {
 			res.status(resPost.statusCode).send(responseString);
 		  }
-		  
+
 		});
 	});
 
@@ -384,7 +385,7 @@ function callSvc(res,headers, dataString, options){
 	reqPost.end();
 	reqPost.on('error', function(e) {
 		console.error(e);
-	});	
+	});
 }
 
 

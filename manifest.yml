@@ -8,13 +8,12 @@ declared-services:
     plan: Lite
   tone-analyzer:
     label: tone_analyzer
-    plan: standard
+    plan: Lite
 applications:
 - path: .
   memory: 256M
   instances: 1
   name: DevConnectTelcoChatBot
-  host: DevConnectTelcoChatBot
   disk_quota: 1024M
   services:
   - conversation-service
