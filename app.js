@@ -35,10 +35,7 @@ var url = require("url");
 var	http = require("http");
 var	https = require("https");
 var	numeral = require("numeral");
-
 var telcoServices = require("./telco_services");
-
-var CONVERSATION_USERNAME = "", CONVERSATION_PASSWORD = "";
 
 var WORKSPACE_ID = vcapServices.WORKSPACE_ID || "<workspace-id>"
 	|| vcapServices.getCredentials('WORKSPACE_ID');
@@ -59,12 +56,11 @@ var phonenumber="";
 var logsessionid="";
 var exitIntent=false;
 
-
 // Create the service wrapper
 var conversation = watson.conversation({
 	url : "https://gateway.watsonplatform.net/conversation/api",
-	username : conversation_credentials.username || CONVERSATION_USERNAME,
-	password : conversation_credentials.password || CONVERSATION_PASSWORD,
+	username : conversation_credentials.username || '',
+	password : conversation_credentials.password || '',
 	version_date : "2016-07-11",
 	version : "v1"
 });
