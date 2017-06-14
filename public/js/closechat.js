@@ -3,14 +3,7 @@ var CloseChat = (function() {
   return {
     closechat:closechat
   };
-  
-  function closechat(){
-  
-  		//window.location='/index.html';
-   		
-  		//Api.validate(inputBox.value);
-  		
-  	
-  	
-  }
-    }());
+
+  function closechat(){}
+
+}());

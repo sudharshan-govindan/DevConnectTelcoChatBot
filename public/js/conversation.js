@@ -29,7 +29,7 @@ var ConversationPanel = (function() {
     chatUpdateSetup();
     Api.sendRequest( '', null );
     setupInputBox();
-  } 
+  }
   // Set up callbacks on payload setters in Api module
   // This causes the displayMessage function to be called when messages are sent / received
   function chatUpdateSetup() {
@@ -190,36 +190,36 @@ var ConversationPanel = (function() {
     if (event.keyCode === 13 && inputBox.value) {
       // Retrieve the context from the previous server response
       var context;
-     
+
       var latestResponse = Api.getResponsePayload();
       if (latestResponse) {
-        context= latestResponse.context;        
+        context= latestResponse.context;
       }
-                 
+
 
       Api.sendRequest(inputBox.value, context);
       Api.logChat(inputBox.value);
       //Api.logSurvey({'Question1':'Answer1'});
-     
-      
+
+
       // Clear input box for further messages
       inputBox.value = '';
       Common.fireEvent(inputBox, 'input');
     }
   }
-  
+
   function timeStamp() {
 // Create a date object with the current time
   var now = new Date();
 
 // Create an array with the current month, day and time
   var date = [ now.getMonth() + 1, now.getDate() ];
- 
+
    date.push(now.getFullYear()-2000);
-  
+
 // Create an array with the current hour, minute and second
   var time = [ now.getHours(), now.getMinutes(), now.getSeconds() ];
-  
+
 // Determine AM or PM suffix based on the hour
   var suffix = ( time[0] < 12 ) ? "AM" : "PM";
 
@@ -244,10 +244,3 @@ var ConversationPanel = (function() {
 }
 
 ());
-
-
-
-
-
-
-

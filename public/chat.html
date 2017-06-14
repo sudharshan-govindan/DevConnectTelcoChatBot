@@ -11,10 +11,9 @@
   <link rel="stylesheet" href="css/app.css">
   <script type="text/javascript">
   	window.onload = function() {
-	  document.getElementById('closeChat').addEventListener('click', function (e) {
-	    document.getElementById('contentParent').style.visibility = "hidden";
-	    //CloseChat.closechat(event);
-	    window.location='/index.html';
+      document.getElementById('closeChat').addEventListener('click', function (e) {
+      document.getElementById('contentParent').style.visibility = "hidden";
+	    window.location = '/index.html';
 	  });
 	};
   </script>
@@ -25,11 +24,11 @@
        <div id="profile-column-holder" class="responsive-column content-column">
        <div class="profile-column">
        <fieldset>
-   		 <legend>Profile:</legend>
-   		  name:<label id="lblName" ></label><br>
-           email:<label id="lblEmail" ></label><br>
-           address: <label id="lblAddress"></label>
-  </fieldset>
+     		 <legend>Profile:</legend>
+     		  name: <label id="lblName" ></label><br>
+          email: <label id="lblEmail" ></label><br>
+          address: <label id="lblAddress"></label>
+        </fieldset>
        </div>
        </div>
       <div id="chat-column-holder" class="responsive-column content-column">
@@ -47,14 +46,12 @@
     </div>
 </div>
 
-
 <script src="js/common.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/conversation.js"></script>
-  <script src="js/global.js"></script>
-  <script src="js/login.js"></script>
-  <script src="js/survey.js"></script>
+<script src="js/api.js"></script>
+<script src="js/conversation.js"></script>
+<script src="js/global.js"></script>
+<script src="js/login.js"></script>
+<!--script src="js/survey.js"></script-->
 
-  
 </body>
 </html>
