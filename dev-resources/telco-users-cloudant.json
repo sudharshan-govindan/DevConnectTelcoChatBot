@@ -1,5 +1,4 @@
 {
-  "_id": "1",
   "userName": "ajay",
   "name": "Ajay Krishna",
   "mobileNumber": "1234567890",
@@ -7,7 +6,6 @@
   "address": "1, Krishna Street, Bangalore"
 },
 {
-  "_id": "2",
   "userName": "smitha",
   "name": "Smitha Rao",
   "mobileNumber": "1243568790",
@@ -15,7 +13,6 @@
   "address": "2, Jayanagar, Bangalore"
 },
 {
-  "_id": "3",
   "userName": "rahul",
   "name": "Rahul Kumar",
   "mobileNumber": "2134657809",
@@ -23,7 +20,6 @@
   "address": "2, J.P.Nagar, Bangalore"
 },
 {
-  "_id": "4",
   "userName": "preethi",
   "name": "Preethi",
   "mobileNumber": "1111111111",
@@ -31,7 +27,6 @@
   "address": "4, Domlur, Bangalore"
 },
 {
-  "_id": "5",
   "userName": "rajesh",
   "name": "Rajesh",
   "mobileNumber": "2222222222",
