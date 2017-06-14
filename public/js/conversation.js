@@ -196,11 +196,7 @@ var ConversationPanel = (function() {
         context= latestResponse.context;
       }
 
-
       Api.sendRequest(inputBox.value, context);
-      Api.logChat(inputBox.value);
-      //Api.logSurvey({'Question1':'Answer1'});
-
 
       // Clear input box for further messages
       inputBox.value = '';

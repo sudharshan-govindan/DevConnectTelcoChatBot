@@ -144,7 +144,7 @@ app.post("/api/message", function(req, res) {
 
 //To be implemented - get the details from Cloudant db
 function getPerson(userName, callback) {
-	var person : {
+	var person = {
 		"userName": "ajay",
 	  "name": "Ajay Krishna",
 	  "mobileNumber": "1234567890",
