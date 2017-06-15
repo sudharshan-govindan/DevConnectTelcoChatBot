@@ -40,7 +40,6 @@ app.use(bodyParser.json());
 //credentials
 var conversation_credentials = vcapServices.getCredentials("conversation");
 var cloudant_credentials = vcapServices.getCredentials("cloudantNoSQLDB");
-var exitIntent = false;
 
 // Create the service wrapper
 var conversation = watson.conversation({
@@ -54,7 +53,7 @@ var conversation = watson.conversation({
 // Endpoint called from the client side
 app.post("/api/message", function(req, res) {
 
-	var workspace = process.env.WORKSPACE_ID || WORKSPACE_ID;
+	var workspace = WORKSPACE_ID;
 	if (!workspace || workspace === "<workspace-id>") {
 		return res.json({
 		  "output": {
@@ -151,6 +150,11 @@ function getPerson(userName, callback) {
 	  "emailId": "ajay.krishna@telco.com",
 	  "address": "1, Krishna Street, Bangalore"
 	}
+
+
+
+
+
 	callback(null, person);
 	return;
 }
