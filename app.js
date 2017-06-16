@@ -26,10 +26,9 @@ var bodyParser = require("body-parser"); // parser for post requests
 var watson = require("watson-developer-cloud"); // watson sdk
 var Cloudant = require("cloudant");
 var vcapServices = require("vcap_services");
-var url = require("url");
-var	https = require("https");
 
-var WORKSPACE_ID = vcapServices.getCredentials('WORKSPACE_ID') || "<workspace-id>";
+//var WORKSPACE_ID = vcapServices.getCredentials('WORKSPACE_ID') || "<workspace-id>";
+var WORKSPACE_ID = '6b3d260f-14ff-4a8a-b9ea-c68db4ff6030';
 
 var app = express();
 
@@ -122,8 +121,6 @@ app.post("/api/message", function(req, res) {
 
 	// Send the input to conversation service
 	function callconversation(payload) {
-		var query_input = JSON.stringify(payload.input);
-		var context_input = JSON.stringify(payload.context);
 		conversation.message(payload, function(err, data) {
 			if (err) {
 				console.log("Error occurred while invoking Conversation. ::", err);
