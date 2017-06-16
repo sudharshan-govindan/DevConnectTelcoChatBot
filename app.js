@@ -24,7 +24,7 @@ require("dotenv").config({
 var express = require("express"); // app server
 var bodyParser = require("body-parser"); // parser for post requests
 var watson = require("watson-developer-cloud"); // watson sdk
-var cloudant = require("cloudant");
+var Cloudant = require("cloudant");
 var vcapServices = require("vcap_services");
 var url = require("url");
 var	https = require("https");
@@ -49,6 +49,25 @@ var conversation = watson.conversation({
 	version_date : "2016-07-11",
 	version : "v1"
 });
+
+var usersMap;
+var userDetails;
+
+if (usersMap === null || usersMap.length === 0) {
+	usersMap = new Map();
+	var cloudant = Cloudant({account:cloudant_credentials.username, password:cloudant_credentials.password});
+	var db = cloudant.db.use('telco-users');
+
+	db.list({include_docs:true}, function (err, data) {
+		if (err) {
+			throw err;
+		}
+		for (var i = 0; i < data.rows.length; i++) {
+			userDetails = [data.rows[i].doc.name, data.rows[i].doc.mobileNumber, data.rows[i].doc.emailId, data.rows[i].doc.address];
+			usersMap.set(data.rows[i].doc.userName, userDetails);
+		}
+	});
+}
 
 // Endpoint called from the client side
 app.post("/api/message", function(req, res) {
@@ -141,22 +160,25 @@ app.post("/api/message", function(req, res) {
 
 });
 
+
+
 //To be implemented - get the details from Cloudant db
 function getPerson(userName, callback) {
-	var person = {
-		"userName": "ajay",
-	  "name": "Ajay Krishna",
-	  "mobileNumber": "1234567890",
-	  "emailId": "ajay.krishna@telco.com",
-	  "address": "1, Krishna Street, Bangalore"
+	var person = {};
+
+	if (usersMap.has(userName)) {
+		var userDetails = usersMap.get(userName);
+		person = {
+			"userName": userName,
+			"name": userDetails[0],
+			"mobileNumber": userDetails[1],
+			"emailId": userDetails[2],
+			"address": userDetails[3]
+		}
+	} else {
+		person = null;
 	}
-
-
-
-
-
 	callback(null, person);
-	return;
 }
 
 // To be implemented - update profile details to db
