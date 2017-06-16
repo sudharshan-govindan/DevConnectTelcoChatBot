@@ -26,8 +26,6 @@ var bodyParser = require("body-parser"); // parser for post requests
 var watson = require("watson-developer-cloud"); // watson sdk
 var Cloudant = require("cloudant");
 var vcapServices = require("vcap_services");
-var url = require("url");
-var	https = require("https");
 
 var WORKSPACE_ID = vcapServices.getCredentials('WORKSPACE_ID') || "<workspace-id>";
 
@@ -53,7 +51,7 @@ var conversation = watson.conversation({
 var usersMap;
 var userDetails;
 
-if (usersMap === null || usersMap.length === 0) {
+if (usersMap === undefined || usersMap === null) {
 	usersMap = new Map();
 	var cloudant = Cloudant({account:cloudant_credentials.username, password:cloudant_credentials.password});
 	var db = cloudant.db.use('telco-users');
@@ -123,8 +121,6 @@ app.post("/api/message", function(req, res) {
 	// Send the input to conversation service
 	function callconversation(payload) {
 
-		var query_input = JSON.stringify(payload.input);
-		var context_input = JSON.stringify(payload.context);
 		conversation.message(payload, function(err, data) {
 			if (err) {
 				console.log("Error occurred while invoking Conversation. ::", err);
@@ -160,13 +156,10 @@ app.post("/api/message", function(req, res) {
 
 });
 
-
-
-//To be implemented - get the details from Cloudant db
+//Get the details from Cloudant db
 function getPerson(userName, callback) {
 	var person = {};
-
-	if (usersMap.has(userName)) {
+	if (usersMap !== undefined && usersMap !== null && usersMap.has(userName)) {
 		var userDetails = usersMap.get(userName);
 		person = {
 			"userName": userName,
@@ -174,11 +167,12 @@ function getPerson(userName, callback) {
 			"mobileNumber": userDetails[1],
 			"emailId": userDetails[2],
 			"address": userDetails[3]
-		}
+		};
 	} else {
 		person = null;
 	}
 	callback(null, person);
+	return;
 }
 
 // To be implemented - update profile details to db
