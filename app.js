@@ -59,7 +59,7 @@ var discovery = new DiscoveryV1({
 discovery.query({
     environment_id: 'cdd6c5fa-f76f-47ea-ad49-6c669e9a652f',
     collection_id: '2e354788-b6ce-48bb-82c4-86b564b890b5',
-    query: 'enriched_text.entities.text%3AVodafone&count=&offset=&aggregation=&filter=&passages=true&highlight=true&return=passages.passage_text'
+    query: '{"enriched_text.entities.text":"Vodafone"}'
   }, function(err, response) {
         if (err) {
           console.error(err);
