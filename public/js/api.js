@@ -79,7 +79,7 @@ var Api = (function() {
       xhr.open('GET', 'https://gateway.watsonplatform.net/discovery/api/v1/environments/cdd6c5fa-f76f-47ea-ad49-6c669e9a652f/collections/2e354788-b6ce-48bb-82c4-86b564b890b5/query?version=2016-11-07&query=enriched_text.entities.text%3AVodafone&count=&offset=&aggregation=&filter=&passages=true&highlight=true&return=passages.passage_text', true);
       xhr.setRequestHeader('Content-type', 'application/json');
       xhr.setRequestHeader("Accept","application/json");
-      xhr.setRequestHeader ("Authorization", "Basic " + Base64.encode(username + ":" + password));
+      xhr.setRequestHeader ("Authorization", "Basic " + btoa(username + ":" + password));
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200 && xhr.responseText) {
 
