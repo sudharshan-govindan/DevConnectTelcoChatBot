@@ -26,6 +26,7 @@ var bodyParser = require("body-parser"); // parser for post requests
 var watson = require("watson-developer-cloud"); // watson sdk
 var Cloudant = require("cloudant");
 var vcapServices = require("vcap_services");
+var DiscoveryV1 = require('watson-developer-cloud/discovery/v1');
 
 //var WORKSPACE_ID = vcapServices.getCredentials('WORKSPACE_ID') || "<workspace-id>";
 var WORKSPACE_ID = 'ad81f0f6-fcd0-455e-abe9-be799b632f1b';
@@ -47,6 +48,12 @@ var conversation = watson.conversation({
 	password : conversation_credentials.password || '',
 	version_date : "2016-07-11",
 	version : "v1"
+});
+
+var discovery = new DiscoveryV1({
+  username: '2e0ac76e-5376-4773-9a22-76c036ca3f3b',
+  password: 'KDG2sfU2sdaI',
+  version_date: DiscoveryV1.VERSION_DATE_2017_04_27
 });
 
 var usersMap;
