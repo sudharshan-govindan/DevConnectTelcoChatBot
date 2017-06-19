@@ -28,7 +28,7 @@ var Cloudant = require("cloudant");
 var vcapServices = require("vcap_services");
 
 //var WORKSPACE_ID = vcapServices.getCredentials('WORKSPACE_ID') || "<workspace-id>";
-var WORKSPACE_ID = '6b3d260f-14ff-4a8a-b9ea-c68db4ff6030';
+var WORKSPACE_ID = 'ad81f0f6-fcd0-455e-abe9-be799b632f1b';
 
 var app = express();
 
