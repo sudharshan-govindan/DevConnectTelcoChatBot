@@ -76,6 +76,7 @@ var Api = (function() {
       var password = 'KDG2sfU2sdaI';
       var xhr = new XMLHttpRequest();
       xhr.withCredentials = true;
+      //invocation.open("GET", url, true, username, password);
       xhr.open('GET', 'https://gateway.watsonplatform.net/discovery/api/v1/environments/cdd6c5fa-f76f-47ea-ad49-6c669e9a652f/collections/2e354788-b6ce-48bb-82c4-86b564b890b5/query?version=2016-11-07&query=enriched_text.entities.text%3AVodafone&count=&offset=&aggregation=&filter=&passages=true&highlight=true&return=passages.passage_text', true);
       xhr.setRequestHeader('Content-type', 'application/json');
       xhr.setRequestHeader("Accept","application/json");
