@@ -56,18 +56,6 @@ var discovery = new DiscoveryV1({
   version_date: DiscoveryV1.VERSION_DATE_2017_04_27
 });
 
-discovery.query({
-    environment_id: 'cdd6c5fa-f76f-47ea-ad49-6c669e9a652f',
-    collection_id: '2e354788-b6ce-48bb-82c4-86b564b890b5',
-    query: '{"enriched_text.entities.text":"Vodafone"}'
-  }, function(err, response) {
-        if (err) {
-          console.error(err);
-        } else {
-          console.log(JSON.stringify(response, null, 2));
-        }
-   });
-
 var usersMap;
 var userDetails;
 
@@ -135,6 +123,18 @@ app.post("/api/message", function(req, res) {
 		}
 
 		callconversation(payload);
+
+		discovery.query({
+		    environment_id: 'cdd6c5fa-f76f-47ea-ad49-6c669e9a652f',
+		    collection_id: '2e354788-b6ce-48bb-82c4-86b564b890b5',
+		    query: 'enriched_text.entities.text:Vodafone'
+		  }, function(err, response) {
+		        if (err) {
+		          console.error(err);
+		        } else {
+		          console.log(JSON.stringify(response, null, 2));
+		        }
+		   });
 
 	});
 
