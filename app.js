@@ -32,7 +32,7 @@ var ideaDiscoveryRequired = false;
 var airtelDiscoveryRequired = false;
 
 //var WORKSPACE_ID = vcapServices.getCredentials('WORKSPACE_ID') || "<workspace-id>";
-var WORKSPACE_ID = '6b3d260f-14ff-4a8a-b9ea-c68db4ff6030';
+var WORKSPACE_ID = '54e1ed10-e643-49cf-87a3-a7f1a856bed3';
 
 var app = express();
 
@@ -141,23 +141,20 @@ app.post("/api/message", function(req, res) {
 				data.context.updateEmail = '';
 			}
 
+			vodafoneDiscoveryRequired = false;
+			ideaDiscoveryRequired = false;
+			airtelDiscoveryRequired = false;
 			//Check the intent to see if a call to Discovery is required
 			if(data.intents[0] && data.intents[0].intent){
 				if(data.intents[0].intent=='Plan_Vodafone'){
 					console.log("Vodafone Discovery intent");
 					vodafoneDiscoveryRequired = true;
-					ideaDiscoveryRequired = false;
-					airtelDiscoveryRequired = false;
 				} else if (data.intents[0].intent=='Plan_Idea') {
 					console.log("Idea Discovery intent");
 					ideaDiscoveryRequired = true;
-					vodafoneDiscoveryRequired = false;
-					airtelDiscoveryRequired = false;
 				} else if (data.intents[0].intent=='Plan_Airtel') {
 					console.log("Airtel Discovery intent");
 					airtelDiscoveryRequired = true;
-					ideaDiscoveryRequired = false;
-					vodafoneDiscoveryRequired = false;
 				}
 			}
 
