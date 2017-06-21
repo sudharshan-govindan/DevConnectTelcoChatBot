@@ -4,20 +4,20 @@
 
 This application demonstrates how the Bluemix Conversation service can be used to build a simple on-board telco chat application.
 
-We will learn and understand how to integrate the Conversation, Discovery and Cloudant services.
+* We will learn and understand how to integrate the Conversation, Discovery and Cloudant services.
 
 Following services are used from Bluemix:
 1. Watson Conversation
 2. Watson Cloudant
 3. Watson Discovery
 
-See the Conversation Service Demo (http://conversation-demo.mybluemix.net/) for reference.
+See the app [demo](http://conversation-demo.mybluemix.net/)
 
 For more information about Conversation, see the [detailed documentation](https://www.ibm.com/watson/developercloud/doc/conversation/index.html).
 
 ## How the app works
 
-The app interface is designed and trained for chatting with the telco customers. Your questions and commands are run against a small set of sample data trained with intents like these:
+The app interface is designed and trained for chatting with the telco customers. The chat interface is on the left, and the JSON that the JavaScript code receives from the server is on the right. Your questions and commands are run against a small set of sample data trained with intents like these:
 
     view profile
     view account
@@ -53,7 +53,7 @@ Ensure that you have a [Bluemix account](https://console.ng.bluemix.net/registra
 5. The deploy performs two actions:  
 
     * deploys the app run time
-    * creates Conversation, Cloudant and Discovery service instances
+    * creates a Conversation, Cloudant and Discovery service instances
 
 6. The deployment can take some time. You can see its status like the one given below:
 
@@ -62,12 +62,6 @@ Ensure that you have a [Bluemix account](https://console.ng.bluemix.net/registra
 **Note:**
  - Existing Bluemix users with Toolchain Id will see a screen like this.
 ![](readme_images/WithToolchain.png)
-
- - For users without a Toolchain Id, the deployment might fail. It might mean that the user does not have a repository. To fix this, refer to the screen shots below.
-
-![](readme_images/ToolChain1.png)
-
-![](readme_images/ToolChain2.png)
 
 ![](readme_images/ToolChain3.png)
 
