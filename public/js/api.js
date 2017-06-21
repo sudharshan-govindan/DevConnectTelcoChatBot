@@ -56,7 +56,7 @@ var Api = (function() {
         document.getElementById('lblAddress').innerHTML=JSON.parse(http1.response).context.address;
       }
 
-  		var jsonResponse = JSON.parse(http1.responseText);
+  		//var jsonResponse = JSON.parse(http1.responseText);
 
     };
 

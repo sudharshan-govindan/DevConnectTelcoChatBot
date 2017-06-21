@@ -27,6 +27,9 @@ var watson = require("watson-developer-cloud"); // watson sdk
 var Cloudant = require("cloudant");
 var vcapServices = require("vcap_services");
 var DiscoveryV1 = require('watson-developer-cloud/discovery/v1');
+var vodafoneDiscoveryRequired = false;
+var ideaDiscoveryRequired = false;
+var airtelDiscoveryRequired = false;
 
 //var WORKSPACE_ID = vcapServices.getCredentials('WORKSPACE_ID') || "<workspace-id>";
 var WORKSPACE_ID = 'ad81f0f6-fcd0-455e-abe9-be799b632f1b';
@@ -124,28 +127,104 @@ app.post("/api/message", function(req, res) {
 
 		callconversation(payload);
 
-		discovery.query({
-		    environment_id: 'cdd6c5fa-f76f-47ea-ad49-6c669e9a652f',
-		    collection_id: '2e354788-b6ce-48bb-82c4-86b564b890b5',
-		    query: 'enriched_text.entities.text:Vodafone'
-		  }, function(err, response) {
-		        if (err) {
-		          console.error(err);
-		        } else {
-		          console.log(JSON.stringify(response, null, 2));
-		        }
-		   });
-
 	});
+
 
 	// Send the input to conversation service
 	function callconversation(payload) {
+		console.log("Getting into call conversation");
 		conversation.message(payload, function(err, data) {
 			if (err) {
 				console.log("Error occurred while invoking Conversation. ::", err);
 				return res.status(err.code || 500).json(err);
 			}
-			return res.json(data);
+
+			//Check the intent to see if a call to Discovery is required
+
+					//console.log("Intent in this dialog "+JSON.stringify(data.intents[0]));
+					if(data.intents[0] && data.intents[0].intent){
+						if(data.intents[0].intent=='Plan_Vodafone'){
+							console.log("Vodafone Discovery intent");
+							vodafoneDiscoveryRequired = true;
+							ideaDiscoveryRequired = false;
+							airtelDiscoveryRequired = false;
+						} else if (data.intents[0].intent=='Plan_Idea') {
+							console.log("Idea Discovery intent");
+							ideaDiscoveryRequired = true;
+							vodafoneDiscoveryRequired = false;
+							airtelDiscoveryRequired = false;
+						} else if (data.intents[0].intent=='Plan_Airtel') {
+							console.log("Airtel Discovery intent");
+							airtelDiscoveryRequired = true;
+							ideaDiscoveryRequired = false;
+							vodafoneDiscoveryRequired = false;
+						}
+					}
+
+					console.log("conversation done. calling discovery");
+
+					var envIdDiscovery = 'cdd6c5fa-f76f-47ea-ad49-6c669e9a652f';
+					var collId = '31a5eacf-e799-49d9-b521-8d07871e8316';
+
+					if(vodafoneDiscoveryRequired){
+					discovery.query({
+					    environment_id: 'cdd6c5fa-f76f-47ea-ad49-6c669e9a652f',
+					    collection_id: '31a5eacf-e799-49d9-b521-8d07871e8316',
+					    query: 'enriched_text.entities.text:Vodafone Plan',
+							passages: 'true'
+					  }, function(err, response) {
+					        if (err) {
+					          console.error(err);
+					        } else {
+					          console.log(JSON.stringify(response, null, 2));
+										var disResponse = response.passages[0].passage_text;
+										console.log("Discovery response  "+disResponse);
+										data.output.text = disResponse;
+										return res.json(data);
+					        }
+					   });
+					} else if (ideaDiscoveryRequired) {
+						discovery.query({
+						    environment_id: 'cdd6c5fa-f76f-47ea-ad49-6c669e9a652f',
+						    collection_id: '31a5eacf-e799-49d9-b521-8d07871e8316',
+						    query: 'enriched_text.keywords.text:Idea',
+								passages: 'true'
+						  }, function(err, response) {
+						        if (err) {
+						          console.error(err);
+						        } else {
+						          console.log(JSON.stringify(response, null, 2));
+											var disResponse = response.passages[0].passage_text;
+											console.log("Discovery response  "+disResponse);
+											data.output.text = disResponse;
+											return res.json(data);
+						        }
+						   });
+
+					} else if (airtelDiscoveryRequired) {
+						discovery.query({
+						    environment_id: 'cdd6c5fa-f76f-47ea-ad49-6c669e9a652f',
+						    collection_id: '31a5eacf-e799-49d9-b521-8d07871e8316',
+						    query: 'enriched_text.entities.text:Bharti Airtel',
+								passages: 'true'
+						  }, function(err, response) {
+						        if (err) {
+						          console.error(err);
+						        } else {
+						          console.log(JSON.stringify(response, null, 2));
+											var disResponse = response.passages[0].passage_text;
+											console.log("Discovery response  "+disResponse);
+											data.output.text = disResponse;
+											return res.json(data);
+						        }
+						   });
+					}
+					else{
+
+					console.log("Completed discovery call"+JSON.stringify(data));
+
+					return res.json(data);
+				}
 		});
 	}
 
