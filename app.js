@@ -50,23 +50,23 @@ var conversation = watson.conversation({
 });
 
 var usersMap;
-var userDetails;
+var cloudant = Cloudant({account:cloudant_credentials.username, password:cloudant_credentials.password});
+var db = cloudant.db.use('telco-users');
 
-if (usersMap === undefined || usersMap === null) {
+function loadUserData() {
 	usersMap = new Map();
-	var cloudant = Cloudant({account:cloudant_credentials.username, password:cloudant_credentials.password});
-	var db = cloudant.db.use('telco-users');
-
 	db.list({include_docs:true}, function (err, data) {
 		if (err) {
 			throw err;
 		}
 		for (var i = 0; i < data.rows.length; i++) {
-			userDetails = [data.rows[i].doc.name, data.rows[i].doc.mobileNumber, data.rows[i].doc.emailId, data.rows[i].doc.address];
+			var userDetails = [data.rows[i].doc.name, data.rows[i].doc.mobileNumber, data.rows[i].doc.emailId, data.rows[i].doc.address];
 			usersMap.set(data.rows[i].doc.userName, userDetails);
 		}
 	});
 }
+
+loadUserData();
 
 // Endpoint called from the client side
 app.post("/api/message", function(req, res) {
@@ -126,15 +126,42 @@ app.post("/api/message", function(req, res) {
 				console.log("Error occurred while invoking Conversation. ::", err);
 				return res.status(err.code || 500).json(err);
 			}
+			if (data.context && data.context.updateEmail && data.context.updateEmail !== '') {
+				editProfile(userName, data.context.updateEmail);
+				data.context.updateEmail = '';
+			}
 			return res.json(data);
 		});
 	}
 
 });
 
+function editProfile(username, email) {
+	db.find({selector:{userName:username}}, function(err, result) {
+	  if (err) {
+	    throw err;
+	  }
+	  var user = {
+			"_id": result.docs[0]._id,
+	    "_rev" : result.docs[0]._rev,
+			"userName" : result.docs[0].userName,
+			"name" : result.docs[0].name,
+	    "emailId": email,
+			"mobileNumber" : result.docs[0].mobileNumber,
+			"address" : result.docs[0].address
+	  };
+	  db.insert(user, function(err, body) {
+			if (err) {
+				throw err;
+			}
+			usersMap = null;
+			loadUserData();
+		});
+	});
+}
+
 // Endpoint called from the client side to validate the entered username
  app.post("/api/validate", function(req, res) {
-
 	 var userName = req.body.input.userName;
 	 var output = {};
 	 getPerson(userName, function(err, person) {
@@ -153,28 +180,29 @@ app.post("/api/message", function(req, res) {
 		 }
 		 return res.json(output);
 	});
-
 });
 
 //Get the details from Cloudant db
 function getPerson(userName, callback) {
 	var person = {};
-	if (usersMap !== undefined && usersMap !== null && usersMap.has(userName)) {
-		var userDetails = usersMap.get(userName);
-		person = {
-			"userName": userName,
-			"name": userDetails[0],
-			"mobileNumber": userDetails[1],
-			"emailId": userDetails[2],
-			"address": userDetails[3]
-		};
+	if (usersMap !== undefined && usersMap !== null) {
+		if (usersMap.has(userName)) {
+			var userDetails = usersMap.get(userName);
+			person = {
+				"userName": userName,
+				"name": userDetails[0],
+				"mobileNumber": userDetails[1],
+				"emailId": userDetails[2],
+				"address": userDetails[3]
+			};
+		} else {
+			person = null;
+		}
+		callback(null, person);
 	} else {
-		person = null;
+		loadUserData();
 	}
-	callback(null, person);
 	return;
 }
-
-// To be implemented - update profile details to db
 
 module.exports = app;
