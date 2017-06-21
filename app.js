@@ -26,6 +26,10 @@ var bodyParser = require("body-parser"); // parser for post requests
 var watson = require("watson-developer-cloud"); // watson sdk
 var Cloudant = require("cloudant");
 var vcapServices = require("vcap_services");
+var DiscoveryV1 = require('watson-developer-cloud/discovery/v1');
+var vodafoneDiscoveryRequired = false;
+var ideaDiscoveryRequired = false;
+var airtelDiscoveryRequired = false;
 
 //var WORKSPACE_ID = vcapServices.getCredentials('WORKSPACE_ID') || "<workspace-id>";
 var WORKSPACE_ID = '6b3d260f-14ff-4a8a-b9ea-c68db4ff6030';
@@ -47,6 +51,12 @@ var conversation = watson.conversation({
 	password : conversation_credentials.password || '',
 	version_date : "2016-07-11",
 	version : "v1"
+});
+
+var discovery = new DiscoveryV1({
+  username: '2e0ac76e-5376-4773-9a22-76c036ca3f3b',
+  password: 'KDG2sfU2sdaI',
+  version_date: DiscoveryV1.VERSION_DATE_2017_04_27
 });
 
 var usersMap;
@@ -130,7 +140,84 @@ app.post("/api/message", function(req, res) {
 				editProfile(userName, data.context.updateEmail);
 				data.context.updateEmail = '';
 			}
+
+			//Check the intent to see if a call to Discovery is required
+			if(data.intents[0] && data.intents[0].intent){
+				if(data.intents[0].intent=='Plan_Vodafone'){
+					console.log("Vodafone Discovery intent");
+					vodafoneDiscoveryRequired = true;
+					ideaDiscoveryRequired = false;
+					airtelDiscoveryRequired = false;
+				} else if (data.intents[0].intent=='Plan_Idea') {
+					console.log("Idea Discovery intent");
+					ideaDiscoveryRequired = true;
+					vodafoneDiscoveryRequired = false;
+					airtelDiscoveryRequired = false;
+				} else if (data.intents[0].intent=='Plan_Airtel') {
+					console.log("Airtel Discovery intent");
+					airtelDiscoveryRequired = true;
+					ideaDiscoveryRequired = false;
+					vodafoneDiscoveryRequired = false;
+				}
+			}
+
+			if(vodafoneDiscoveryRequired){
+			discovery.query({
+			    environment_id: 'cdd6c5fa-f76f-47ea-ad49-6c669e9a652f',
+			    collection_id: '31a5eacf-e799-49d9-b521-8d07871e8316',
+			    query: 'enriched_text.entities.text:Vodafone Plan',
+					passages: 'true'
+			  }, function(err, response) {
+			        if (err) {
+			          console.error(err);
+			        } else {
+			          console.log(JSON.stringify(response, null, 2));
+								var disResponse = response.passages[0].passage_text;
+								console.log("Discovery response  "+disResponse);
+								data.output.text = disResponse;
+								return res.json(data);
+			        }
+			   });
+			} else if (ideaDiscoveryRequired) {
+				discovery.query({
+				    environment_id: 'cdd6c5fa-f76f-47ea-ad49-6c669e9a652f',
+				    collection_id: '31a5eacf-e799-49d9-b521-8d07871e8316',
+				    query: 'enriched_text.keywords.text:Idea',
+						passages: 'true'
+				  }, function(err, response) {
+				        if (err) {
+				          console.error(err);
+				        } else {
+				          console.log(JSON.stringify(response, null, 2));
+									var disResponse = response.passages[0].passage_text;
+									console.log("Discovery response  "+disResponse);
+									data.output.text = disResponse;
+									return res.json(data);
+				        }
+				   });
+
+			} else if (airtelDiscoveryRequired) {
+				discovery.query({
+				    environment_id: 'cdd6c5fa-f76f-47ea-ad49-6c669e9a652f',
+				    collection_id: '31a5eacf-e799-49d9-b521-8d07871e8316',
+				    query: 'enriched_text.entities.text:Bharti Airtel',
+						passages: 'true'
+				  }, function(err, response) {
+				        if (err) {
+				          console.error(err);
+				        } else {
+				          console.log(JSON.stringify(response, null, 2));
+									var disResponse = response.passages[0].passage_text;
+									console.log("Discovery response  "+disResponse);
+									data.output.text = disResponse;
+									return res.json(data);
+				        }
+				   });
+			}
+			else{
 			return res.json(data);
+		  }
+
 		});
 	}
 
