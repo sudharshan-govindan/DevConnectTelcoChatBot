@@ -140,7 +140,9 @@ app.post("/api/message", function(req, res) {
 			}
 
 			//Check the intent to see if a call to Discovery is required
-
+				vodafoneDiscoveryRequired = false;
+				ideaDiscoveryRequired = false;
+				airtelDiscoveryRequired = false;
 					//console.log("Intent in this dialog "+JSON.stringify(data.intents[0]));
 					if(data.intents[0] && data.intents[0].intent){
 						if(data.intents[0].intent=='Plan_Vodafone'){
