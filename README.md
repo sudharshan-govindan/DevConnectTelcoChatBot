@@ -76,8 +76,6 @@ Ensure that you have a [Bluemix account](https://console.ng.bluemix.net/registra
 
 ![](readme_images/ToolChain3.png)
 
-![](readme_images/ToolChain4.png)
-
 
 7. Once your app is deployed, select VIEW YOUR APP
 
