@@ -30,6 +30,17 @@ Example commands that can be executed by the Conversation service are:
     view profile
     edit emailId
 
+## Technical Architecture - Enterprise Digital Assistant
+<b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="readme_images/Telco-Architecture.png" width="800" height="350" align="center">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+- The user writes a query about a service to the chatbot
+- The orchestrator accepts query, saves the user context & starts a REST call with the Cognitive APIs.
+- Depending on the nature of the query (long /Short tail), the answer is provided by either Watson Conversation API or Watson Discovery Services
+
 ## Pre-requisities
 
 Ensure that you have a [Bluemix account](https://console.ng.bluemix.net/registration/)
@@ -65,6 +76,7 @@ Ensure that you have a [Bluemix account](https://console.ng.bluemix.net/registra
 
 ![](readme_images/ToolChain3.png)
 
+![](readme_images/ToolChain4.png)
 
 
 7. Once your app is deployed, select VIEW YOUR APP
