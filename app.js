@@ -31,8 +31,9 @@ var vodafoneDiscoveryRequired = false;
 var ideaDiscoveryRequired = false;
 var airtelDiscoveryRequired = false;
 
-//var WORKSPACE_ID = vcapServices.getCredentials('WORKSPACE_ID') || "<workspace-id>";
-var WORKSPACE_ID = '54e1ed10-e643-49cf-87a3-a7f1a856bed3';
+var WORKSPACE_ID = vcapServices.getCredentials('WORKSPACE_ID')
+|| vcapServices.WORKSPACE_ID || process.env.WORKSPACE_ID || "<workspace-id>";
+//var WORKSPACE_ID = '54e1ed10-e643-49cf-87a3-a7f1a856bed3';
 
 var app = express();
 
@@ -49,19 +50,19 @@ var conversation = watson.conversation({
 	url : "https://gateway.watsonplatform.net/conversation/api",
 	username : conversation_credentials.username || '',
 	password : conversation_credentials.password || '',
-	version_date : "2016-07-11",
+	version_date : "2017-05-26",
 	version : "v1"
 });
 
 var discovery = new DiscoveryV1({
-  username: '2e0ac76e-5376-4773-9a22-76c036ca3f3b',
-  password: 'KDG2sfU2sdaI',
+  username: process.env.DISCOVERY_USERNAME,
+  password: process.env.DISCOVERY_PASSWORD,
   version_date: DiscoveryV1.VERSION_DATE_2017_04_27
 });
 
 var usersMap;
 var cloudant = Cloudant({account:cloudant_credentials.username, password:cloudant_credentials.password});
-var db = cloudant.db.use('telco-users');
+var db = cloudant.db.use(process.env.CLOUDANT_DB_NAME);
 
 function loadUserData() {
 	usersMap = new Map();
@@ -147,13 +148,10 @@ app.post("/api/message", function(req, res) {
 			//Check the intent to see if a call to Discovery is required
 			if(data.intents[0] && data.intents[0].intent){
 				if(data.intents[0].intent=='Plan_Vodafone'){
-					console.log("Vodafone Discovery intent");
 					vodafoneDiscoveryRequired = true;
 				} else if (data.intents[0].intent=='Plan_Idea') {
-					console.log("Idea Discovery intent");
 					ideaDiscoveryRequired = true;
 				} else if (data.intents[0].intent=='Plan_Airtel') {
-					console.log("Airtel Discovery intent");
 					airtelDiscoveryRequired = true;
 				}
 			}
@@ -170,7 +168,6 @@ app.post("/api/message", function(req, res) {
 			        } else {
 			          console.log(JSON.stringify(response, null, 2));
 								var disResponse = response.passages[0].passage_text;
-								console.log("Discovery response  "+disResponse);
 								data.output.text = disResponse;
 								return res.json(data);
 			        }
@@ -187,7 +184,6 @@ app.post("/api/message", function(req, res) {
 				        } else {
 				          console.log(JSON.stringify(response, null, 2));
 									var disResponse = response.passages[0].passage_text;
-									console.log("Discovery response  "+disResponse);
 									data.output.text = disResponse;
 									return res.json(data);
 				        }
@@ -205,7 +201,6 @@ app.post("/api/message", function(req, res) {
 				        } else {
 				          console.log(JSON.stringify(response, null, 2));
 									var disResponse = response.passages[0].passage_text;
-									console.log("Discovery response  "+disResponse);
 									data.output.text = disResponse;
 									return res.json(data);
 				        }
