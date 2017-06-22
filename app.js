@@ -31,8 +31,8 @@ var vodafoneDiscoveryRequired = false;
 var ideaDiscoveryRequired = false;
 var airtelDiscoveryRequired = false;
 
-//var WORKSPACE_ID = vcapServices.getCredentials('WORKSPACE_ID') || "<workspace-id>";
-var WORKSPACE_ID = '54e1ed10-e643-49cf-87a3-a7f1a856bed3';
+var WORKSPACE_ID = vcapServices.getCredentials('WORKSPACE_ID') || "<workspace-id>";
+//var WORKSPACE_ID = '54e1ed10-e643-49cf-87a3-a7f1a856bed3';
 
 var app = express();
 
