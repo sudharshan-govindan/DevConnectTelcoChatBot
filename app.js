@@ -31,9 +31,7 @@ var vodafoneDiscoveryRequired = false;
 var ideaDiscoveryRequired = false;
 var airtelDiscoveryRequired = false;
 
-var WORKSPACE_ID = vcapServices.getCredentials('WORKSPACE_ID')
-|| vcapServices.WORKSPACE_ID || process.env.WORKSPACE_ID || "<workspace-id>";
-//var WORKSPACE_ID = '54e1ed10-e643-49cf-87a3-a7f1a856bed3';
+var WORKSPACE_ID = vcapServices.WORKSPACE_ID || process.env.WORKSPACE_ID || "<workspace-id>";
 
 var app = express();
 
@@ -50,8 +48,8 @@ var conversation = watson.conversation({
 	url : "https://gateway.watsonplatform.net/conversation/api",
 	username : conversation_credentials.username || '',
 	password : conversation_credentials.password || '',
-	version_date : "2017-05-26",
-	version : "v1"
+	version_date : process.env.CONVERSATION_VERSION_DATE,
+	version : process.env.CONVERSATION_VERSION
 });
 
 var discovery = new DiscoveryV1({
@@ -145,6 +143,7 @@ app.post("/api/message", function(req, res) {
 			vodafoneDiscoveryRequired = false;
 			ideaDiscoveryRequired = false;
 			airtelDiscoveryRequired = false;
+
 			//Check the intent to see if a call to Discovery is required
 			if(data.intents[0] && data.intents[0].intent){
 				if(data.intents[0].intent=='Plan_Vodafone'){
@@ -158,8 +157,8 @@ app.post("/api/message", function(req, res) {
 
 			if(vodafoneDiscoveryRequired){
 			discovery.query({
-			    environment_id: 'cdd6c5fa-f76f-47ea-ad49-6c669e9a652f',
-			    collection_id: '31a5eacf-e799-49d9-b521-8d07871e8316',
+			    environment_id: process.env.DISCOVERY_ENVIRONMENT_ID,
+			    collection_id: process.env.DISCOVERY_COLLECTION_ID,
 			    query: 'enriched_text.entities.text:Vodafone Plan',
 					passages: 'true'
 			  }, function(err, response) {
@@ -174,8 +173,8 @@ app.post("/api/message", function(req, res) {
 			   });
 			} else if (ideaDiscoveryRequired) {
 				discovery.query({
-				    environment_id: 'cdd6c5fa-f76f-47ea-ad49-6c669e9a652f',
-				    collection_id: '31a5eacf-e799-49d9-b521-8d07871e8316',
+				    environment_id: process.env.DISCOVERY_ENVIRONMENT_ID,
+				    collection_id: process.env.DISCOVERY_COLLECTION_ID,
 				    query: 'enriched_text.keywords.text:Idea',
 						passages: 'true'
 				  }, function(err, response) {
@@ -191,8 +190,8 @@ app.post("/api/message", function(req, res) {
 
 			} else if (airtelDiscoveryRequired) {
 				discovery.query({
-				    environment_id: 'cdd6c5fa-f76f-47ea-ad49-6c669e9a652f',
-				    collection_id: '31a5eacf-e799-49d9-b521-8d07871e8316',
+				    environment_id: process.env.DISCOVERY_ENVIRONMENT_ID,
+				    collection_id: process.env.DISCOVERY_COLLECTION_ID,
 				    query: 'enriched_text.entities.text:Bharti Airtel',
 						passages: 'true'
 				  }, function(err, response) {
